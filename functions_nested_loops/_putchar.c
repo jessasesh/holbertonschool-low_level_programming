@@ -2,10 +2,9 @@
 #include <unistd.h>
 
 /**
- * defining _putchar
- * 
+ * _putchar - defining prototype
+ * @c: variable description
  * Return: 1 Success
- * Error, -1 returned
  */
 int _putchar(char c)
 {

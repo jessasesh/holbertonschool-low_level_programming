@@ -2,7 +2,7 @@
 #include "main.h"
 #include <unistd.h>
 /**
- * main- print "_putchar"
+ * main - print
  *
  * Return: need number
  */
