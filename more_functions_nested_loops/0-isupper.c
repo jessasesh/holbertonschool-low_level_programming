@@ -1,8 +1,7 @@
 #include "main.h"
 #include <unistd.h>
 /**
- *int _isupper(int c) - prototype that checks for
- *uppercase character
+ *_isupper - prototype that checks for uppercase character
  *@c: variable
  *Return: 1 for uppercase c, otherwise return 0
  */
