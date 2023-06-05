@@ -4,7 +4,7 @@
  * @n: variable given
  * Return: void
  */
-void print_line(int n);
+void print_line(int n)
 
 {
 	int j;
@@ -15,7 +15,7 @@ void print_line(int n);
 		{
 			putchar('_');
 		}
-		putchar('\n');
+	putchar('\n');
 	}
 	else
 	{
