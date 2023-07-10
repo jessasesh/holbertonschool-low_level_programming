@@ -33,4 +33,3 @@
 
 ### Repo Files
 
-** This project was created by Logan and Jess **
