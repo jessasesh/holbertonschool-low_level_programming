@@ -4,31 +4,28 @@
 #include "lists.h"
 
 /**
- * struct list_s - singly linked list
+ * print_list- singly linked list
  * @str: string - (malloc'ed string)
  * @len: length of the string
  * @next: points to the next node
- * Return: 
- * Description: singly linked list node structure
- */
-typedef struct list_s
+ * Return: number of nodes
+ size_t count;
+ * size_t print_list(const list_t *h)
+*/
 {
-    char *str;
-    unsigned int len;
-    struct list_s *next;
-} list_t;
+	size_t nodes = 0;
 
-size_t print_list(const list_t *h);
+	while (h)
+	{
+		if (h->str == NULL)
+			printf("[0] (nil)\n");
 
-int main(void)
-{
-    list_t *head;
-    list_t *new;
-    list_t hello = {"World", 5, NULL};
-    size_t n;
+		else
+			printf("[%d] %s\n", h->len, h->str);
 
-    printf("\n");
+		nodes++;
+		h = h->next;
+	}
 
-    free(new);
-    return (0);
+	return (nodes);
 }
