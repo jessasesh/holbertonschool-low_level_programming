@@ -1,84 +1,62 @@
-#include "holberton.h"
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
-
+#include "main.h"
 /**
- * file1fail - Print error message if can't read file
- * @file: Name of the file that can't be read
+ * main - coppies the content of a file to another file
+ * @argc: number of arguments
+ * @argv: arguments
+ * Return: 1
  */
-void file1fail(char *file)
-{
-	dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", file);
-	exit(98);
-}
-
-/**
- * file2fail - Print error message if can't write to file
- * @file: Name of the file that can't be write to
- */
-void file2fail(char *file)
-{
-	dprintf(STDERR_FILENO, "Error: Can't write to %s\n", file);
-	exit(99);
-}
-
-/**
- * closefail - Print error message if file can't close
- * @fd: File descriptor of the file
- */
-void closefail(int fd)
-{
-	dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
-	exit(100);
-}
-
-/**
-  * main - copy the content of one file to another
-  * @argc: Number of arguments received
-  * @argv: Array of arguments received
-  *
-  * Return: 0 on success
-  */
 int main(int argc, char *argv[])
 {
-	int file1, file2, file1rd, file2wr, closed;
-	char buffer[BUFSIZE];
-	mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH;
+	int fd_from, fd_to, bytesRead, bytesWritten;
+	char buffer[BUFFER_SIZE];
 
 	if (argc != 3)
 	{
 		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
 		exit(97);
 	}
-	if (argv[1] == NULL)
-		file1fail(argv[1]);
-	if (argv[2] == NULL)
-		file2fail(argv[2]);
-	file1 = open(argv[1], O_RDONLY);
-	if (file1 == -1)
-		file1fail(argv[1]);
-	file2 = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, mode);
-	if (file2 == -1)
-		file2fail(argv[2]);
-	file1rd = read(file1, buffer, BUFSIZE);
-	if (file1rd == -1)
-		file1fail(argv[1]);
-	while (file1rd > 0)
+	fd_from = open(argv[1], O_RDONLY);
+	if (fd_from == -1)
 	{
-		file2wr = write(file2, buffer, file1rd);
-		if (file2wr != file1rd)
-			file2fail(argv[2]);
-		file1rd = read(file1, buffer, BUFSIZE);
-		if (file1rd == -1)
-			file1fail(argv[1]);
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
+		exit(98);
 	}
-	closed = close(file1);
-	if (closed == -1)
-		closefail(file1);
-	closed = close(file2);
-	if (closed == -1)
-		closefail(file2);
+	fd_to = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
+	if (fd_to == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv[2]);
+		exit(99);
+	}
+	/* Read and Write at the same time */
+	while ((bytesRead = read(fd_from, buffer, BUFFER_SIZE)) > 0)
+	{
+		bytesWritten = write(fd_to, buffer, bytesRead);
+		if (bytesWritten == -1)
+		{
+			dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv[2]);
+			exit(99);
+		}
+	}
+	if (bytesRead == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
+		exit(98);
+	}
+	safe_close(fd_from);
+	safe_close(fd_to);
 	return (0);
+}
+
+/**
+ * safe_close - close files
+ * @fd: file descriptor
+ */
+
+void safe_close(int fd)
+{
+	if (close(fd) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't close fd %i\n", fd);
+		exit(100);
+	}
 }
